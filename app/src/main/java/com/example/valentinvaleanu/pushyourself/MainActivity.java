@@ -1,6 +1,8 @@
 package com.example.valentinvaleanu.pushyourself;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.NonNull;
@@ -19,6 +21,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.valentinvaleanu.pushyourself.data.DataContract;
+import com.example.valentinvaleanu.pushyourself.data.PushYourselfDbHelper;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.ChildEventListener;
@@ -40,8 +44,7 @@ import java.io.ObjectStreamException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity
-{
+public class MainActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private DatabaseReference databaseReference;
 
@@ -95,28 +98,28 @@ public class MainActivity extends AppCompatActivity
         bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override
-                    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.action_exercises:
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.action_exercises:
 
-                                viewPager.setCurrentItem(0);
+                        viewPager.setCurrentItem(0);
 
-                                break;
-                            case R.id.action_schedules:
+                        break;
+                    case R.id.action_schedules:
 
-                                viewPager.setCurrentItem(1);
+                        viewPager.setCurrentItem(1);
 
-                                break;
-                            case R.id.action_achievements:
+                        break;
+                    case R.id.action_achievements:
 
-                                viewPager.setCurrentItem(2);
+                        viewPager.setCurrentItem(2);
 
-                                break;
-                        }
-                        return false;
-                    }
-                });
+                        break;
+                }
+                return false;
+            }
+        });
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -128,9 +131,7 @@ public class MainActivity extends AppCompatActivity
             public void onPageSelected(int position) {
                 if (prevMenuItem != null) {
                     prevMenuItem.setChecked(false);
-                }
-                else
-                {
+                } else {
                     bottomNavigationView.getMenu().getItem(0).setChecked(false);
                 }
                 bottomNavigationView.getMenu().getItem(position).setChecked(true);
@@ -146,6 +147,7 @@ public class MainActivity extends AppCompatActivity
 
         setupViewPager(viewPager);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -159,11 +161,10 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public void openExercises(View view)
-    {
+    public void openExercises(View view) {
         Intent newIntent;
 
-        switch(view.getId()) {
+        switch (view.getId()) {
 
             case R.id.arms_exercises:
 
@@ -228,8 +229,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void setupViewPager(ViewPager viewPager)
-    {
+    private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
 
         exercisesFragment = new ExercisesFragment();
@@ -237,14 +237,14 @@ public class MainActivity extends AppCompatActivity
         achievementFragment = new AchievementFragment();
 
         adapter.addFragment(exercisesFragment);
-        adapter.addFragment(scheduleFragment);;
+        adapter.addFragment(scheduleFragment);
+        ;
         adapter.addFragment(achievementFragment);
 
         viewPager.setAdapter(adapter);
     }
 
-    public void loadFromFirebase()
-    {
+    public void loadFromFirebase() {
         absExercises = new ArrayList<Exercise>();
         armsExercises = new ArrayList<Exercise>();
         backExercises = new ArrayList<Exercise>();
@@ -270,16 +270,69 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public void addSQLTable(String tableName, ArrayList<Exercise> exercises)
-    {
-        // TO BE IMPLEMENTED
-        ///
-        ///
-        ///
+    public void addSQLTable(String tableName, ArrayList<Exercise> exercises) {
+
+        PushYourselfDbHelper dbHelper = new PushYourselfDbHelper(this);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+
+        if (tableName.equals("abs_exercises")) {
+            for (int i = 0; i < exercises.size(); i++) {
+                values.put(DataContract.DataEntry.COLUMN_ABS_NAME, exercises.get(i).getName());
+                values.put(DataContract.DataEntry.COLUMN_ABS_DIFFICULTY, exercises.get(i).getDifficulty());
+                values.put(DataContract.DataEntry.COLUMN_ABS_DESCRIPTION, exercises.get(i).getDescription());
+                values.put(DataContract.DataEntry.COLUMN_ABS_MUSCLE_GROUP, exercises.get(i).getMuscleGroup());
+                db.insert(DataContract.DataEntry.TABLE_ABS_NAME, null, values);
+            }
+        } else if (tableName.equals("arms_exercises")) {
+            for (int i = 0; i < exercises.size(); i++) {
+                values.put(DataContract.DataEntry.COLUMN_ARMS_NAME, exercises.get(i).getName());
+                values.put(DataContract.DataEntry.COLUMN_ARMS_DIFFICULTY, exercises.get(i).getDifficulty());
+                values.put(DataContract.DataEntry.COLUMN_ARMS_DESCRIPTION, exercises.get(i).getDescription());
+                values.put(DataContract.DataEntry.COLUMN_ARMS_MUSCLE_GROUP, exercises.get(i).getMuscleGroup());
+                db.insert(DataContract.DataEntry.TABLE_ARMS_NAME, null, values);
+            }
+        } else if (tableName.equals("legs_exercises")) {
+            for (int i = 0; i < exercises.size(); i++) {
+                values.put(DataContract.DataEntry.COLUMN_LEGS_NAME, exercises.get(i).getName());
+                values.put(DataContract.DataEntry.COLUMN_LEGS_DIFFICULTY, exercises.get(i).getDifficulty());
+                values.put(DataContract.DataEntry.COLUMN_LEGS_DESCRIPTION, exercises.get(i).getDescription());
+                values.put(DataContract.DataEntry.COLUMN_LEGS_MUSCLE_GROUP, exercises.get(i).getMuscleGroup());
+                db.insert(DataContract.DataEntry.TABLE_LEGS_NAME, null, values);
+            }
+        } else if (tableName.equals("back_exercises")) {
+            for (int i = 0; i < exercises.size(); i++) {
+                values.put(DataContract.DataEntry.COLUMN_BACK_NAME, exercises.get(i).getName());
+                values.put(DataContract.DataEntry.COLUMN_BACK_DIFFICULTY, exercises.get(i).getDifficulty());
+                values.put(DataContract.DataEntry.COLUMN_BACK_DESCRIPTION, exercises.get(i).getDescription());
+                values.put(DataContract.DataEntry.COLUMN_BACK_MUSCLE_GROUP, exercises.get(i).getMuscleGroup());
+                db.insert(DataContract.DataEntry.TABLE_BACK_NAME, null, values);
+            }
+        } else if (tableName.equals("chest_exercises")) {
+            for (int i = 0; i < exercises.size(); i++) {
+                values.put(DataContract.DataEntry.COLUMN_CHEST_NAME, exercises.get(i).getName());
+                values.put(DataContract.DataEntry.COLUMN_CHEST_DIFFICULTY, exercises.get(i).getDifficulty());
+                values.put(DataContract.DataEntry.COLUMN_CHEST_DESCRIPTION, exercises.get(i).getDescription());
+                values.put(DataContract.DataEntry.COLUMN_CHEST_MUSCLE_GROUP, exercises.get(i).getMuscleGroup());
+                db.insert(DataContract.DataEntry.TABLE_CHEST_NAME, null, values);
+            }
+        } else if (tableName.equals("cardio_exercises")) {
+            for (int i = 0; i < exercises.size(); i++) {
+                values.put(DataContract.DataEntry.COLUMN_CARDIO_NAME, exercises.get(i).getName());
+                values.put(DataContract.DataEntry.COLUMN_CARDIO_DIFFICULTY, exercises.get(i).getDifficulty());
+                values.put(DataContract.DataEntry.COLUMN_CARDIO_DESCRIPTION, exercises.get(i).getDescription());
+                values.put(DataContract.DataEntry.COLUMN_CARDIO_MUSCLE_GROUP, exercises.get(i).getMuscleGroup());
+                db.insert(DataContract.DataEntry.TABLE_CARDIO_NAME, null, values);
+            }
+        }
     }
 
-    public void readChildrenFromDataSnapshot(final ArrayList<Exercise> exercises, String muscleGroup)
-    {
+    public void insert() {
+
+    }
+
+    public void readChildrenFromDataSnapshot(final ArrayList<Exercise> exercises, String muscleGroup) {
         databaseReference = database.getReference("Exercises").child(muscleGroup);
 
         databaseReference.addValueEventListener(new ValueEventListener() {
@@ -291,6 +344,7 @@ public class MainActivity extends AppCompatActivity
                     exercises.add(childDataSnapshot.getValue(Exercise.class)); // cast to Exercise class
                 }
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
 
