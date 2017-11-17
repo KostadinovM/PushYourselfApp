@@ -277,55 +277,14 @@ public class MainActivity extends AppCompatActivity {
 
         ContentValues values = new ContentValues();
 
-        if (tableName.equals("abs_exercises")) {
-            for (int i = 0; i < exercises.size(); i++) {
-                values.put(DataContract.DataEntry.COLUMN_ABS_NAME, exercises.get(i).getName());
-                values.put(DataContract.DataEntry.COLUMN_ABS_DIFFICULTY, exercises.get(i).getDifficulty());
-                values.put(DataContract.DataEntry.COLUMN_ABS_DESCRIPTION, exercises.get(i).getDescription());
-                values.put(DataContract.DataEntry.COLUMN_ABS_MUSCLE_GROUP, exercises.get(i).getMuscleGroup());
-                db.insert(DataContract.DataEntry.TABLE_ABS_NAME, null, values);
-            }
-        } else if (tableName.equals("arms_exercises")) {
-            for (int i = 0; i < exercises.size(); i++) {
-                values.put(DataContract.DataEntry.COLUMN_ARMS_NAME, exercises.get(i).getName());
-                values.put(DataContract.DataEntry.COLUMN_ARMS_DIFFICULTY, exercises.get(i).getDifficulty());
-                values.put(DataContract.DataEntry.COLUMN_ARMS_DESCRIPTION, exercises.get(i).getDescription());
-                values.put(DataContract.DataEntry.COLUMN_ARMS_MUSCLE_GROUP, exercises.get(i).getMuscleGroup());
-                db.insert(DataContract.DataEntry.TABLE_ARMS_NAME, null, values);
-            }
-        } else if (tableName.equals("legs_exercises")) {
-            for (int i = 0; i < exercises.size(); i++) {
-                values.put(DataContract.DataEntry.COLUMN_LEGS_NAME, exercises.get(i).getName());
-                values.put(DataContract.DataEntry.COLUMN_LEGS_DIFFICULTY, exercises.get(i).getDifficulty());
-                values.put(DataContract.DataEntry.COLUMN_LEGS_DESCRIPTION, exercises.get(i).getDescription());
-                values.put(DataContract.DataEntry.COLUMN_LEGS_MUSCLE_GROUP, exercises.get(i).getMuscleGroup());
-                db.insert(DataContract.DataEntry.TABLE_LEGS_NAME, null, values);
-            }
-        } else if (tableName.equals("back_exercises")) {
-            for (int i = 0; i < exercises.size(); i++) {
-                values.put(DataContract.DataEntry.COLUMN_BACK_NAME, exercises.get(i).getName());
-                values.put(DataContract.DataEntry.COLUMN_BACK_DIFFICULTY, exercises.get(i).getDifficulty());
-                values.put(DataContract.DataEntry.COLUMN_BACK_DESCRIPTION, exercises.get(i).getDescription());
-                values.put(DataContract.DataEntry.COLUMN_BACK_MUSCLE_GROUP, exercises.get(i).getMuscleGroup());
-                db.insert(DataContract.DataEntry.TABLE_BACK_NAME, null, values);
-            }
-        } else if (tableName.equals("chest_exercises")) {
-            for (int i = 0; i < exercises.size(); i++) {
-                values.put(DataContract.DataEntry.COLUMN_CHEST_NAME, exercises.get(i).getName());
-                values.put(DataContract.DataEntry.COLUMN_CHEST_DIFFICULTY, exercises.get(i).getDifficulty());
-                values.put(DataContract.DataEntry.COLUMN_CHEST_DESCRIPTION, exercises.get(i).getDescription());
-                values.put(DataContract.DataEntry.COLUMN_CHEST_MUSCLE_GROUP, exercises.get(i).getMuscleGroup());
-                db.insert(DataContract.DataEntry.TABLE_CHEST_NAME, null, values);
-            }
-        } else if (tableName.equals("cardio_exercises")) {
-            for (int i = 0; i < exercises.size(); i++) {
-                values.put(DataContract.DataEntry.COLUMN_CARDIO_NAME, exercises.get(i).getName());
-                values.put(DataContract.DataEntry.COLUMN_CARDIO_DIFFICULTY, exercises.get(i).getDifficulty());
-                values.put(DataContract.DataEntry.COLUMN_CARDIO_DESCRIPTION, exercises.get(i).getDescription());
-                values.put(DataContract.DataEntry.COLUMN_CARDIO_MUSCLE_GROUP, exercises.get(i).getMuscleGroup());
-                db.insert(DataContract.DataEntry.TABLE_CARDIO_NAME, null, values);
-            }
+        for (int i = 0; i < exercises.size(); i++) {
+            values.put(DataContract.DataEntry.COLUMN_NAME, exercises.get(i).getName());
+            values.put(DataContract.DataEntry.COLUMN_DIFFICULTY, exercises.get(i).getDifficulty());
+            values.put(DataContract.DataEntry.COLUMN_DESCRIPTION, exercises.get(i).getDescription());
+            values.put(DataContract.DataEntry.COLUMN_MUSCLE_GROUP, exercises.get(i).getMuscleGroup());
+            db.insert(tableName, null, values);
         }
+
     }
 
     public void insert() {
